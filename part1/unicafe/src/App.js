@@ -12,7 +12,9 @@ import { useState } from "react"
 // }
 const Statistics = (props) => {
   const all = props.count[0] + props.count[1] + props.count[2]
-
+  if (all === 0) {
+    return "No feedback given"
+  }
   return (
     <>
       <div>Good {props.count[0]}</div>
