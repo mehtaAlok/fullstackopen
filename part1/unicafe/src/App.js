@@ -30,15 +30,6 @@ const Statistics = ({ good, neutral, bad }) => {
       <StatisticLine text="Average" value={(good - bad) / all} />
       <StatisticLine text="Positive" value={`${(good / all) * 100}%`} />
     </div>
-
-    // <>
-    //   <div>Good {props.count[0]}</div>
-    //   <div>Neutral {props.count[1]}</div>
-    //   <div>Bad {props.count[2]}</div>
-    //   <div>All {all}</div>
-    //   <div>Average {(props.count[0] - props.count[2]) / all}</div>
-    //   <div>Positive {(props.count[0] / all) * 100}%</div>
-    // </>
   )
 }
 
@@ -65,9 +56,6 @@ const App = () => {
       <font size="+2">Statistics</font>
       <br />
       <Statistics good={good} neutral={neutral} bad={bad} />
-      {/* <Display count={good} text="Good" />
-      <Display count={neutral} text="Neutral" />
-      <Display count={bad} text="Bad" /> */}
     </div>
   )
 }
