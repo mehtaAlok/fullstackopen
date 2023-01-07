@@ -1,11 +1,5 @@
 import { useState } from "react"
 
-// const Button = (props) => {
-//   return <button onClick={props.randomNumber}>Next anecdote</button>
-// }
-
-let randomNum = Math.floor(Math.random() * 100)
-
 const App = () => {
   const anecdotes = [
     "If it hurts, do it more often.",
