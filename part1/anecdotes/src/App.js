@@ -12,15 +12,24 @@ const App = () => {
   ]
 
   const [selected, setSelected] = useState(0)
+  const [point, setPoint] = useState(new Uint8Array(7))
+
+  const handleVote = () => {
+    const vote = [...point]
+    vote[selected] += 1
+    setPoint(vote)
+  }
 
   return (
     <div>
       {anecdotes[selected]}
       <br />
+      <>Has {point[selected]} votes</>
+      <br />
+      <button onClick={() => handleVote()}>Vote</button>
       <button onClick={() => setSelected(Math.floor(Math.random() * 7))}>
         New anecdote
       </button>
-      {/* <Button randomNumber={randomNum} /> */}
     </div>
   )
 }
