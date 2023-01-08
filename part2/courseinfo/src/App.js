@@ -11,6 +11,11 @@ const Course = (course) => {
           </p>
         ))}
       </>
+      <>
+        Total of{" "}
+        {course.course.parts.map((x) => x.exercises).reduce((a, b) => a + b, 0)}{" "}
+        exercises
+      </>
     </>
   )
 }
@@ -34,6 +39,11 @@ const App = () => {
         name: "State of a component",
         exercises: 14,
         id: 3
+      },
+      {
+        name: "Redux",
+        exercises: 11,
+        id: 4
       }
     ]
   }
