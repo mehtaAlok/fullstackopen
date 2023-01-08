@@ -13,6 +13,7 @@ const App = () => {
 
   const [selected, setSelected] = useState(0)
   const [point, setPoint] = useState(new Uint8Array(7))
+  const mostVotes = Math.max(...point)
 
   const handleVote = () => {
     const vote = [...point]
@@ -20,8 +21,12 @@ const App = () => {
     setPoint(vote)
   }
 
+  const pointMost = point.findIndex((val) => val === mostVotes)
+  console.log("pointMost", pointMost)
+
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
       <br />
       <>Has {point[selected]} votes</>
@@ -30,6 +35,10 @@ const App = () => {
       <button onClick={() => setSelected(Math.floor(Math.random() * 7))}>
         New anecdote
       </button>
+      <h1>Anecdote with most votes</h1>
+      <>
+        {anecdotes[pointMost]} has {mostVotes} votes
+      </>
     </div>
   )
 }
