@@ -1,12 +1,10 @@
-// const Total = ({ sum }) => <p>Number of exercises {sum}</p>
-
 const Course = (course) => {
   const exerciseArr = course.course.parts.map((x) => x.exercises)
   const total = exerciseArr.reduce((a, b) => a + b, 0)
 
   return (
     <>
-      <h1>{course.course.name}</h1>
+      <h2>{course.course.name}</h2>
       <>
         {course.course.parts.map((x) => (
           <p key={x.id}>
@@ -14,43 +12,65 @@ const Course = (course) => {
           </p>
         ))}
       </>
-      <>
-        Total of {total}
-        exercises
-      </>
+      <b>Total of {total} exercises</b>
     </>
   )
 }
 
 const App = () => {
-  const course = {
-    id: 1,
-    name: "Half Stack application development",
-    parts: [
-      {
-        name: "Fundamentals of React",
-        exercises: 10,
-        id: 1
-      },
-      {
-        name: "Using props to pass data",
-        exercises: 7,
-        id: 2
-      },
-      {
-        name: "State of a component",
-        exercises: 14,
-        id: 3
-      },
-      {
-        name: "Redux",
-        exercises: 11,
-        id: 4
-      }
-    ]
-  }
+  const courses = [
+    {
+      id: 1,
+      name: "Half Stack application development",
+      parts: [
+        {
+          name: "Fundamentals of React",
+          exercises: 10,
+          id: 1
+        },
+        {
+          name: "Using props to pass data",
+          exercises: 7,
+          id: 2
+        },
+        {
+          name: "State of a component",
+          exercises: 14,
+          id: 3
+        },
+        {
+          name: "Redux",
+          exercises: 11,
+          id: 4
+        }
+      ]
+    },
+    {
+      name: "Node.js",
+      id: 2,
+      parts: [
+        {
+          name: "Routing",
+          exercises: 3,
+          id: 1
+        },
+        {
+          name: "Middlewares",
+          exercises: 7,
+          id: 2
+        }
+      ]
+    }
+  ]
 
-  return <Course course={course} />
+  return (
+    <div>
+      <h1>Web development curriculum</h1>
+      {courses.map((x) => {
+        return <Course course={x} key={x.id}></Course>
+      })}
+    </div>
+  )
 }
 
 export default App
