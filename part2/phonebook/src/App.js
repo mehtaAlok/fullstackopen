@@ -10,14 +10,20 @@ const App = () => {
 
   const addPerson = (e) => {
     e.preventDefault()
-    console.log("target is", e.target)
     const personObject = { name: newName }
+    const found = persons.find(
+      (e) => JSON.stringify(e) === JSON.stringify(personObject)
+    )
+    if (JSON.stringify(personObject) === JSON.stringify(found)) {
+      alert(`${newName} is already added to the phonebook`)
+      setNewName("")
+      return
+    }
     setPersons(persons.concat(personObject))
     setNewName("")
   }
 
   const handleChange = (e) => {
-    console.log("target", e.target)
     setNewName(e.target.value)
   }
 
