@@ -8,7 +8,6 @@ const Person = ({ person, filter }) => {
       </li>
     ))
   }
-
   return person.map((x, i) => (
     <li key={i}>
       {x.name} {x.phone}
@@ -29,10 +28,12 @@ const PersonForm = ({ submit, valName, nameChange, valNum, numChange }) => {
   return (
     <form onSubmit={submit}>
       <div>
-        Name: <input value={valName} onChange={nameChange} />
+        Name:{" "}
+        <input value={valName} onChange={nameChange} id="name" name="name" />
       </div>
       <div>
-        Number: <input value={valNum} onChange={numChange} />
+        Number:{" "}
+        <input value={valNum} onChange={numChange} id="phone" name="phone" />
       </div>
 
       <div>
@@ -46,8 +47,7 @@ const App = () => {
   const [persons, setPersons] = useState([
     { name: "Arto Hellas", phone: "040-1234567" },
     { name: "Ada Lovelaace", phone: "39-44-5323523" },
-    { name: "Dan Abramov", phone: "12-43-234345" },
-    { name: "Alok Mehta", phone: "07446-090-123" }
+    { name: "Dan Abramov", phone: "12-43-234345" }
   ])
   const [newName, setNewName] = useState("")
   const [newNumber, setNumber] = useState("")
@@ -82,13 +82,16 @@ const App = () => {
 
   const filter = (e) => {
     setFilter(e.target.value)
-    const input = e.target.value
+    if (e.target.value === "") {
+      setFilterObj(null)
+    } else {
+      const input = e.target.value
+      const output = persons.filter((item) => {
+        return item.name.toLowerCase().includes(input.toLowerCase())
+      })
 
-    const output = persons.filter((item) => {
-      return item.name.toLowerCase().includes(input.toLowerCase())
-    })
-
-    setFilterObj(output)
+      setFilterObj(output)
+    }
   }
 
   return (
