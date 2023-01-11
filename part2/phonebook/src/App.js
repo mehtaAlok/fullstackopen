@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import axios from "axios"
 
 const Person = ({ person, filter }) => {
   if (filter) {
@@ -45,14 +46,20 @@ const PersonForm = ({ submit, valName, nameChange, valNum, numChange }) => {
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: "Arto Hellas", phone: "040-1234567" },
-    { name: "Ada Lovelaace", phone: "39-44-5323523" },
-    { name: "Dan Abramov", phone: "12-43-234345" }
+    // { name: "Arto Hellas", phone: "040-1234567" },
+    // { name: "Ada Lovelaace", phone: "39-44-5323523" },
+    // { name: "Dan Abramov", phone: "12-43-234345" }
   ])
   const [newName, setNewName] = useState("")
   const [newNumber, setNumber] = useState("")
   const [newFilter, setFilter] = useState("")
   const [newFilterObj, setFilterObj] = useState(null)
+
+  useEffect(() => {
+    axios.get("http://localhost:3001/persons").then((response) => {
+      setPersons(response.data)
+    })
+  }, [])
 
   const addPerson = (e) => {
     e.preventDefault()
