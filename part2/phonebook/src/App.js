@@ -5,13 +5,13 @@ const Person = ({ person, filter }) => {
   if (filter) {
     return filter.map((x, i) => (
       <li key={i}>
-        {x.name} {x.phone}
+        {x.name} {x.number}
       </li>
     ))
   }
   return person.map((x, i) => (
     <li key={i}>
-      {x.name} {x.phone}
+      {x.name} {x.number}
     </li>
   ))
 }
@@ -34,7 +34,7 @@ const PersonForm = ({ submit, valName, nameChange, valNum, numChange }) => {
       </div>
       <div>
         Number:{" "}
-        <input value={valNum} onChange={numChange} id="phone" name="phone" />
+        <input value={valNum} onChange={numChange} id="number" name="number" />
       </div>
 
       <div>
@@ -56,6 +56,7 @@ const App = () => {
 
   useEffect(() => {
     axios.get("http://localhost:3001/persons").then((response) => {
+      console.log("useEffect output is", response.data)
       setPersons(response.data)
     })
   }, [])
@@ -63,19 +64,30 @@ const App = () => {
   const addPerson = (e) => {
     e.preventDefault()
     const personObject = { name: newName }
-    const phoneObject = { phone: newNumber }
+    const phoneObject = { number: newNumber }
+    console.log("who is persons BEFORE", persons)
+
     const found = persons.find((e) => {
       return e.name === newName
     })
+
     if (found) {
       alert(`${newName} is already added to the phonebook`)
       setNewName("")
       return
     }
-    const newPersonObj = [{ ...personObject, ...phoneObject }]
+    const newPersonObj = { ...personObject, ...phoneObject }
     setPersons(persons.concat(newPersonObj))
-    setNewName("")
-    setNumber("")
+
+    axios
+      .post("http://localhost:3001/persons", newPersonObj)
+      .then((response) => {
+        setPersons(persons.concat(response.data))
+        setNewName("")
+        setNumber("")
+      })
+    // setNewName("")
+    // setNumber("")
   }
 
   const handleChange = (e) => {
