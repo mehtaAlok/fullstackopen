@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
-import axios from "axios"
+// import axios from "axios"
+import phonebookService from "./services/notes"
 
 const Person = ({ person, filter }) => {
   if (filter) {
@@ -45,19 +46,16 @@ const PersonForm = ({ submit, valName, nameChange, valNum, numChange }) => {
 }
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    // { name: "Arto Hellas", phone: "040-1234567" },
-    // { name: "Ada Lovelaace", phone: "39-44-5323523" },
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState("")
   const [newNumber, setNumber] = useState("")
   const [newFilter, setFilter] = useState("")
   const [newFilterObj, setFilterObj] = useState(null)
 
+  // const url = "http://localhost:3001/persons"
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      console.log("useEffect output is", response.data)
-      setPersons(response.data)
+    phonebookService.getAll().then((response) => {
+      setPersons(response)
     })
   }, [])
 
@@ -65,7 +63,6 @@ const App = () => {
     e.preventDefault()
     const personObject = { name: newName }
     const phoneObject = { number: newNumber }
-    console.log("who is persons BEFORE", persons)
 
     const found = persons.find((e) => {
       return e.name === newName
@@ -79,15 +76,12 @@ const App = () => {
     const newPersonObj = { ...personObject, ...phoneObject }
     setPersons(persons.concat(newPersonObj))
 
-    axios
-      .post("http://localhost:3001/persons", newPersonObj)
-      .then((response) => {
-        setPersons(persons.concat(response.data))
-        setNewName("")
-        setNumber("")
-      })
-    // setNewName("")
-    // setNumber("")
+    phonebookService.create(newPersonObj).then((response) => {
+      setPersons(persons.concat(response))
+    })
+
+    setNewName("")
+    setNumber("")
   }
 
   const handleChange = (e) => {
