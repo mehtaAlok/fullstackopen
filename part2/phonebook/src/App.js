@@ -1,19 +1,28 @@
 import { useState, useEffect } from "react"
-// import axios from "axios"
+import axios from "axios"
 import phonebookService from "./services/notes"
 
-const Person = ({ person, filter }) => {
+const Person = ({ person, filter, clickAction }) => {
   if (filter) {
     return filter.map((x, i) => (
-      <li key={i}>
-        {x.name} {x.number}
-      </li>
+      <div>
+        <>
+          {x.name} {x.number}
+          {""}
+        </>
+        <button id={x.id} onClick={clickAction}>
+          Delete
+        </button>
+      </div>
     ))
   }
   return person.map((x, i) => (
-    <li key={i}>
-      {x.name} {x.number}
-    </li>
+    <div>
+      {x.name} {x.number} {""}
+      <button id={x.id} onClick={clickAction}>
+        Delete
+      </button>
+    </div>
   ))
 }
 
@@ -52,7 +61,7 @@ const App = () => {
   const [newFilter, setFilter] = useState("")
   const [newFilterObj, setFilterObj] = useState(null)
 
-  // const url = "http://localhost:3001/persons"
+  const url = "http://localhost:3001/persons"
   useEffect(() => {
     phonebookService.getAll().then((response) => {
       setPersons(response)
@@ -92,6 +101,19 @@ const App = () => {
     setNumber(e.target.value)
   }
 
+  const clickAction = (e) => {
+    const i = Number(e.target.id)
+    const displayName = persons.filter((item) => item.id === i)
+
+    if (window.confirm(`Delete ${displayName[0].name}?`)) {
+      axios.delete(`${url}/${i}`).then(() => {
+        phonebookService.getAll().then((response) => {
+          setPersons(response)
+        })
+      })
+    }
+  }
+
   const filter = (e) => {
     setFilter(e.target.value)
     if (e.target.value === "") {
@@ -120,7 +142,11 @@ const App = () => {
       />
       <h2>Numbers</h2>
       <ul>
-        <Person person={persons} filter={newFilterObj} />
+        <Person
+          person={persons}
+          filter={newFilterObj}
+          clickAction={clickAction}
+        />
       </ul>
     </div>
   )
