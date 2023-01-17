@@ -3,8 +3,8 @@ import axios from "axios"
 import phonebookService from "./services/notes"
 import "./index.css"
 
-const Notification = ({ message }) => {
-  const footerStyle = {
+const Notification = ({ message, failed }) => {
+  const successStyle = {
     color: "green",
     background: "lightgrey",
     fontSize: 20,
@@ -14,11 +14,27 @@ const Notification = ({ message }) => {
     marginBottom: 10
   }
 
-  if (message === null) {
-    return null
+  const failedStyle = {
+    color: "red",
+    background: "lightgrey",
+    fontSize: 20,
+    borderStyle: "solid",
+    borderColor: "red",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
   }
 
-  return <div style={footerStyle}>Added {message}</div>
+  if ((message === null) & (failed === null)) {
+    return null
+  } else if (failed !== null) {
+    return (
+      <div style={failedStyle}>
+        Information of {failed} has already been removed from the server
+      </div>
+    )
+  }
+  return <div style={successStyle}>Added {message}</div>
 }
 
 const Person = ({ person, filter, clickAction }) => {
@@ -80,6 +96,7 @@ const App = () => {
   const [newFilter, setFilter] = useState("")
   const [newFilterObj, setFilterObj] = useState(null)
   const [success, setsuccess] = useState(null)
+  const [failed, setFailed] = useState(null)
 
   const url = "http://localhost:3001/persons"
   useEffect(() => {
@@ -108,6 +125,19 @@ const App = () => {
             phonebookService.getAll().then((response) => {
               setPersons(response)
             })
+          })
+          .catch((error) => {
+            const indexOfPerson = persons.indexOf(found)
+
+            const updatedPerson = [
+              ...persons.slice(0, indexOfPerson),
+              ...persons.slice(indexOfPerson + 1)
+            ]
+            setPersons(updatedPerson)
+            setFailed(newName)
+            setTimeout(() => {
+              setFailed(null)
+            }, 5000)
           })
       }
       setNewName("")
@@ -172,7 +202,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={success} />
+      <Notification message={success} failed={failed} />
 
       <Filter input={newFilter} change={filter} />
       <h2>Add a new</h2>
