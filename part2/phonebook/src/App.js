@@ -5,7 +5,7 @@ import phonebookService from "./services/notes"
 const Person = ({ person, filter, clickAction }) => {
   if (filter) {
     return filter.map((x, i) => (
-      <div>
+      <div key={i}>
         <>
           {x.name} {x.number}
           {""}
@@ -17,7 +17,7 @@ const Person = ({ person, filter, clickAction }) => {
     ))
   }
   return person.map((x, i) => (
-    <div>
+    <div key={i}>
       {x.name} {x.number} {""}
       <button id={x.id} onClick={clickAction}>
         Delete
@@ -72,14 +72,26 @@ const App = () => {
     e.preventDefault()
     const personObject = { name: newName }
     const phoneObject = { number: newNumber }
-
     const found = persons.find((e) => {
       return e.name === newName
     })
 
     if (found) {
-      alert(`${newName} is already added to the phonebook`)
+      if (
+        window.confirm(
+          `${newName} is already added to the phonebook, replace the old number with a new one?`
+        )
+      ) {
+        axios
+          .put(`${url}/${found.id}`, { name: newName, number: newNumber })
+          .then(() => {
+            phonebookService.getAll().then((response) => {
+              setPersons(response)
+            })
+          })
+      }
       setNewName("")
+      setNumber("")
       return
     }
     const newPersonObj = { ...personObject, ...phoneObject }
@@ -141,13 +153,13 @@ const App = () => {
         numChange={handlePhoneChange}
       />
       <h2>Numbers</h2>
-      <ul>
+      <>
         <Person
           person={persons}
           filter={newFilterObj}
           clickAction={clickAction}
         />
-      </ul>
+      </>
     </div>
   )
 }
