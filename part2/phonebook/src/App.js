@@ -1,6 +1,25 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
 import phonebookService from "./services/notes"
+import "./index.css"
+
+const Notification = ({ message }) => {
+  const footerStyle = {
+    color: "green",
+    background: "lightgrey",
+    fontSize: 20,
+    borderStyle: "solid",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
+
+  if (message === null) {
+    return null
+  }
+
+  return <div style={footerStyle}>Added {message}</div>
+}
 
 const Person = ({ person, filter, clickAction }) => {
   if (filter) {
@@ -60,6 +79,7 @@ const App = () => {
   const [newNumber, setNumber] = useState("")
   const [newFilter, setFilter] = useState("")
   const [newFilterObj, setFilterObj] = useState(null)
+  const [success, setsuccess] = useState(null)
 
   const url = "http://localhost:3001/persons"
   useEffect(() => {
@@ -92,6 +112,10 @@ const App = () => {
       }
       setNewName("")
       setNumber("")
+      setsuccess(newName)
+      setTimeout(() => {
+        setsuccess(null)
+      }, 5000)
       return
     }
     const newPersonObj = { ...personObject, ...phoneObject }
@@ -100,6 +124,11 @@ const App = () => {
     phonebookService.create(newPersonObj).then((response) => {
       setPersons(persons.concat(response))
     })
+
+    setsuccess(newName)
+    setTimeout(() => {
+      setsuccess(null)
+    }, 5000)
 
     setNewName("")
     setNumber("")
@@ -143,6 +172,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={success} />
+
       <Filter input={newFilter} change={filter} />
       <h2>Add a new</h2>
       <PersonForm
