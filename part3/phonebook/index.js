@@ -25,7 +25,13 @@ let persons = [
 ]
 
 app.get("/", (request, response) => {
-  response.send("<h1>Hello World!</h1>")
+  response.send("<h1>Phonebook</h1>")
+})
+
+app.get("/info", (request, response) => {
+  response.send(
+    `Phonebook has info for ${persons.length} people <br></br>${Date()}`
+  )
 })
 
 app.get("/api/persons", (request, response) => {
@@ -36,12 +42,3 @@ const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
-
-// const app = http.createServer((request, response) => {
-//   response.writeHead(200, { "Content-Type": "application/json" })
-//   response.end(JSON.stringify(persons))
-// })
-
-// const PORT = 3001
-// app.listen(PORT)
-// console.log(`Server running on port ${PORT}`)
