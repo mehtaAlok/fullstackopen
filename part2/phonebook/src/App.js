@@ -98,7 +98,8 @@ const App = () => {
   const [success, setsuccess] = useState(null)
   const [failed, setFailed] = useState(null)
 
-  const url = "http://localhost:3001/persons"
+  // const url = "http://localhost:3001/persons"
+  const url = "http://localhost:3001/api/persons"
   useEffect(() => {
     phonebookService.getAll().then((response) => {
       setPersons(response)
@@ -127,6 +128,7 @@ const App = () => {
             })
           })
           .catch((error) => {
+            console.log("ERROR caught and deleting")
             const indexOfPerson = persons.indexOf(found)
 
             const updatedPerson = [
@@ -174,13 +176,36 @@ const App = () => {
 
   const clickAction = (e) => {
     const i = Number(e.target.id)
+
     const displayName = persons.filter((item) => item.id === i)
+
+    const found = persons.find((e) => {
+      return e.name === newName
+    })
 
     if (window.confirm(`Delete ${displayName[0].name}?`)) {
       axios.delete(`${url}/${i}`).then(() => {
-        phonebookService.getAll().then((response) => {
-          setPersons(response)
-        })
+        phonebookService
+          .getAll()
+          .then((response) => {
+            setPersons(response)
+          })
+          .catch((error) => {
+            console.error("Error thrown", error)
+            console.log("ERROR caught and deleting")
+            const indexOfPerson = persons.indexOf(displayName)
+            console.log("What is index of person", indexOfPerson)
+
+            const updatedPerson = [
+              ...persons.slice(0, indexOfPerson),
+              ...persons.slice(indexOfPerson + 1)
+            ]
+            setPersons(updatedPerson)
+            setFailed(newName)
+            setTimeout(() => {
+              setFailed(null)
+            }, 5000)
+          })
       })
     }
   }
