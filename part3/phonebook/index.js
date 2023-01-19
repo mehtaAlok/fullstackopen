@@ -2,15 +2,18 @@ const { response } = require("express")
 const express = require("express")
 const app = express()
 app.use(express.json())
-const morgan = require("morgan")
+const cors = require("cors")
+
+app.use(cors())
+// const morgan = require("morgan")
 
 const generateId = () => {
   return Math.floor(Math.random() * 100000)
 }
 
-morgan.token("body", function (req, res) {
-  return JSON.stringify(req.body)
-})
+// morgan.token("body", function (req, res) {
+//   return JSON.stringify(req.body)
+// })
 
 let persons = [
   {
@@ -35,7 +38,7 @@ let persons = [
   }
 ]
 
-app.use(morgan("tiny"), morgan(":body"))
+// app.use(morgan("tiny"), morgan(":body"))
 
 app.get("/", (request, response) => {
   response.send("<h1>Phonebook</h1>")
@@ -48,10 +51,12 @@ app.get("/info", (request, response) => {
 })
 
 app.get("/api/persons", (request, response) => {
+  console.log("Get all people")
   response.json(persons)
 })
 
 app.get("/api/persons/:id", (request, response) => {
+  console.log("Get SPECIFIC person")
   const id = Number(request.params.id)
   const person = persons.find((person) => person.id === id)
 
@@ -64,12 +69,14 @@ app.get("/api/persons/:id", (request, response) => {
 })
 
 app.delete("/api/persons/:id", (request, response) => {
+  console.log("delete fired")
   const id = Number(request.params.id)
   persons = persons.filter((person) => person.id !== id)
   response.status(204).end()
 })
 
 app.post("/api/persons", (request, response) => {
+  console.log("Adding new person")
   const body = request.body
   const duplicateName = persons.filter((x) => x.name === body.name)
 
@@ -86,10 +93,11 @@ app.post("/api/persons", (request, response) => {
   }
 
   persons = persons.concat(person)
-  response.json(persons)
+  console.log("What is persons", person)
+  response.json(person)
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
