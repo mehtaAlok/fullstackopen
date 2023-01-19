@@ -8,6 +8,10 @@ const generateId = () => {
   return Math.floor(Math.random() * 100000)
 }
 
+morgan.token("body", function (req, res) {
+  return JSON.stringify(req.body)
+})
+
 let persons = [
   {
     id: 1,
@@ -31,7 +35,7 @@ let persons = [
   }
 ]
 
-app.use(morgan("tiny"))
+app.use(morgan("tiny"), morgan(":body"))
 
 app.get("/", (request, response) => {
   response.send("<h1>Phonebook</h1>")
