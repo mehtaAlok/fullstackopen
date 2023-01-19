@@ -4,7 +4,7 @@ const app = express()
 app.use(express.json())
 
 const generateId = () => {
-  return Math.floor(Math.random() * 10000)
+  return Math.floor(Math.random() * 100000)
 }
 
 let persons = [
@@ -64,10 +64,12 @@ app.delete("/api/persons/:id", (request, response) => {
 
 app.post("/api/persons", (request, response) => {
   const body = request.body
-  console.log("Body is", body)
+  const duplicateName = persons.filter((x) => x.name === body.name)
 
-  if (!body) {
+  if (!body || !body.name || !body.number) {
     return response.status(400).json({ error: "Content missing" })
+  } else if (Object.keys(duplicateName).length > 0) {
+    return response.status(400).json({ error: "Name must be unique" })
   }
 
   const person = {
